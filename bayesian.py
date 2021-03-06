@@ -6,7 +6,7 @@ from pgmpy.estimators import MaximumLikelihoodEstimator
 from pgmpy.models import BayesianModel
 from pgmpy.inference import VariableElimination
 
-data = pd.read_csv('dataset/train.csv')
+data = pd.read_csv('dataset/mobile.csv')
 data =  data.replace('N/A', np.nan)
 
 #Bateria
@@ -42,8 +42,45 @@ model = BayesianModel([('n_cores', 'ram'),
 
 model.fit(data, estimator=MaximumLikelihoodEstimator)
 
-train_infer = VariableElimination(model)
+mobile_infer = VariableElimination(model)
 
+# # Testes
+# q4 = mobile_infer.query(variables=['price_range'], 
+#                        evidence={ 'ram': 0, 
+#                                 'battery_power': 0, 
+#                                 'pc': 3, 
+#                                 'fc': 1, 
+#                                 'int_memory': 2, 
+#                                 'n_cores': 2, 
+#                                 'four_g': 0,
+#                                 'wifi': 0,
+#                                 'clock_speed': 0 })
+# print(q4)
+
+# q5 = mobile_infer.query(variables=['price_range'], 
+#                        evidence={ 'ram': 1, 
+#                                 'four_g': 0, 
+#                                 'wifi': 0,
+#                                 'four_g': 1, 
+#                                 'pc': 15,
+#                                 'fc': 10,
+#                                 'n_cores': 4,
+#                                 'clock_speed': 1, 
+#                                 'battery_power': 2})
+# print(q5)
+
+
+# q6 = mobile_infer.query(variables=['price_range'], 
+#                        evidence={ 'fc': 6, 
+#                                 'pc': 19, 
+#                                 'four_g': 1, 
+#                                 'wifi': 1, 
+#                                 'battery_power': 3,
+#                                 'n_cores': 2, 
+#                                 'int_memory': 33, 
+#                                 'ram': 3,  
+#                                 'clock_speed': 2})
+# print(q6)
 
 def menu():
 
@@ -57,7 +94,7 @@ def menu():
   opcao_ram = int(input("Informe a memória ram em Gb 0 - (< 1Gb) | 1 - (1Gb a 2Gb) | 2 - (2Gb a 3Gb) | 3 - (> 4Gb)  : "))
   opcao_clockspeed = int(input("Informe a velocidade do clock Ghz:  0 - (< 1.33) | 1 - (1.33 á 2.16) | 2 - (> 2.16) : "))
   
-  q1 = train_infer.query(variables=['price_range'], 
+  q1 = mobile_infer.query(variables=['price_range'], 
                         evidence={ 'ram': opcao_ram, 'battery_power': opcao_bateria, 'pc': opcao_pc, 'fc': opcao_fc, 'int_memory': opcao_intmemory, 
                         'n_cores': opcao_numcores, 'four_g': opcao_4g,'wifi': opcao_wifi,'clock_speed': opcao_clockspeed })
   
