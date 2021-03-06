@@ -6,7 +6,7 @@ from pgmpy.estimators import MaximumLikelihoodEstimator
 from pgmpy.models import BayesianModel
 from pgmpy.inference import VariableElimination
 
-data = pd.read_csv('train.csv')
+data = pd.read_csv('dataset/train.csv')
 data =  data.replace('N/A', np.nan)
 
 #Bateria
@@ -44,18 +44,29 @@ model.fit(data, estimator=MaximumLikelihoodEstimator)
 
 train_infer = VariableElimination(model)
 
-q1 = train_infer.query(variables=['price_range'], 
-                       evidence={ 'ram': 0, 'battery_power': 0, 'pc': 3, 'fc': 1, 'int_memory': 2, 
-                       'n_cores': 2, 'four_g': 0,'wifi': 0,'clock_speed': 0 })
-print(q1)
 
+def menu():
 
-q2 = train_infer.query(variables=['price_range'], 
-                       evidence={ 'ram': 1, 'four_g': 0, 'wifi': 0,'four_g': 1, 'pc': 15,
-                       'fc': 10,'n_cores': 4,'clock_speed': 1, 'battery_power': 2})
-print(q2)
+  opcao_wifi = int(input("Informe se o celular terá wifi: 0 - Não | 1 - Sim: "))
+  opcao_4g = int(input("Informe se o celular terá 4G:   0 - Não | 1 - Sim: "))
+  opcao_bateria = int(input("Informe a bateria em mAh :   0 - (< 875) | 1 - (875 a 1249) | 2 - (1249 a 1623) | 3 - (> 1623):  "))
+  opcao_fc = int(input("Informe os megapixels da camera Frontal  (0 a 19):  "))
+  opcao_pc = int(input("Informe os megapixels da camera Traseira (0 a 20): "))
+  opcao_numcores = int(input("Informe o número de núcleos (1 a 8): "))
+  opcao_intmemory = int(input("Informe a memória interna em Gb (2 a 64): "))
+  opcao_ram = int(input("Informe a memória ram em Gb 0 - (< 1Gb) | 1 - (1Gb a 2Gb) | 2 - (2Gb a 3Gb) | 3 - (> 4Gb)  : "))
+  opcao_clockspeed = int(input("Informe a velocidade do clock Ghz:  0 - (< 1.33) | 1 - (1.33 á 2.16) | 2 - (> 2.16) : "))
+  
+  q1 = train_infer.query(variables=['price_range'], 
+                        evidence={ 'ram': opcao_ram, 'battery_power': opcao_bateria, 'pc': opcao_pc, 'fc': opcao_fc, 'int_memory': opcao_intmemory, 
+                        'n_cores': opcao_numcores, 'four_g': opcao_4g,'wifi': opcao_wifi,'clock_speed': opcao_clockspeed })
+  
+ 
+  print(q1)
+  
+  continua = int(input("Realizar outra predição?: 0 - Não | 1 - Sim: "))
+  if(continua):
+    menu()
 
-q3 = train_infer.query(variables=['price_range'], 
-                       evidence={ 'fc': 6, 'pc': 19, 'four_g': 1, 'wifi': 1, 'battery_power': 3,
-                                  'n_cores': 2, 'int_memory': 33, 'ram': 3,  'clock_speed': 2, })
-print(q3)
+menu()
+
